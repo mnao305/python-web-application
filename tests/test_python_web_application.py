@@ -1,4 +1,4 @@
-from python_web_application import __version__
+from schedule_app import __version__
 
 
 def test_version():
