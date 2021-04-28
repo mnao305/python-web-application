@@ -25,3 +25,9 @@ schedules_table = sqla.Table(
 
 def create_table(engine: sqla.engine.Connectable):
     metadata.create_all(engine)
+
+
+def add_item(engine: sqla.engine.Connectable, title: str, body: str):
+    """新規アイテムをテーブルにインサートするよ"""
+    q = schedules_table.insert()
+    engine.connect().execute(q, title=title, body=body)

@@ -1,5 +1,5 @@
 import sqlalchemy as sqla
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Form, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
@@ -30,9 +30,12 @@ async def read_post_page(request: Request):
 
 
 @app.post("/add")
-async def post_new_item(request: Request):
+async def post_new_item(
+    request: Request, title: str = Form("hogefuga"), body: str = Form(...)
+):
     """新規アイテムの追加"""
-    return {"message": "TODO"}
+    db.add_item(db_engine, title, body)
+    return {"message": "TODO", "title": title, "body": body}
 
 
 @app.get("/items/{id}", response_class=HTMLResponse)
