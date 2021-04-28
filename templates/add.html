@@ -12,8 +12,9 @@
       align-items: flex-start;
     }
 
-    #add-form>* {
-      margin: 10px;
+    #add-form>input,
+    textarea {
+      margin-bottom: 10px;
     }
   </style>
 </head>
@@ -21,9 +22,13 @@
 <body>
   <h1>予定の追加</h1>
   <form action="/add" method="post" id="add-form">
+    <span>タイトル:</span>
     <input type="text" name="title" id="title-id" placeholder="Title">
+    <span>開始日時:</span>
     <input type="datetime-local" name="begin_at">
+    <span>終了日時:</span>
     <input type="datetime-local" name="end_at">
+    <span>自由テキスト:</span>
     <textarea name="body" id="body-id" cols="30" rows="10" placeholder="body"></textarea>
     <button type="submit">追加</button>
   </form>
