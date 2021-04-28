@@ -1,11 +1,20 @@
+import sqlalchemy as sqla
 from fastapi import FastAPI, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
+
+from schedule_app import db
+from schedule_app.config import Settings
 
 app = FastAPI()
 
 
 templates = Jinja2Templates(directory="templates")
+
+
+settings = Settings()
+db_engine = sqla.create_engine(settings.database_url, echo=True)
+db.create_table(db_engine)
 
 
 @app.get("/")
