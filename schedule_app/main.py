@@ -2,11 +2,13 @@ from datetime import datetime
 
 import sqlalchemy as sqla
 from fastapi import FastAPI, Form, Request
+from fastapi.param_functions import Depends
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
 from schedule_app import db
 from schedule_app.config import Settings
+from schedule_app.models import Schedule
 
 app = FastAPI()
 
@@ -24,6 +26,10 @@ def string2Datetime(strDate: str):
     return datetime.fromisoformat(strDate)
 
 
+def get_engine() -> sqla.engine.Connectable:
+    return db_engine
+
+
 @app.get("/")
 async def read_root_page(request: Request):
     """一覧を表示する"""
@@ -39,6 +45,7 @@ async def read_post_page(request: Request):
 @app.post("/add")
 async def post_new_item(
     request: Request,
+    engine: sqla.engine.Connectable = Depends(get_engine),
     title: str = Form(""),
     body: str = Form(""),
     begin_at: str = Form(None),
@@ -48,7 +55,9 @@ async def post_new_item(
     beginAt = string2Datetime(begin_at)
     endAt = string2Datetime(end_at)
 
-    db.add_item(db_engine, title, body, beginAt, endAt)
+    db.add_item(
+        engine, Schedule(title=title, body=body, begin_at=beginAt, end_at=endAt)
+    )
     return {
         "message": "TODO",
         "title": title,
