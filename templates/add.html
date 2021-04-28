@@ -22,6 +22,8 @@
   <h1>予定の追加</h1>
   <form action="/add" method="post" id="add-form">
     <input type="text" name="title" id="title-id" placeholder="Title">
+    <input type="datetime-local" name="begin_at">
+    <input type="datetime-local" name="end_at">
     <textarea name="body" id="body-id" cols="30" rows="10" placeholder="body"></textarea>
     <button type="submit">追加</button>
   </form>
