@@ -21,7 +21,7 @@ db.create_table(db_engine)
 
 def string2Datetime(strDate: str):
     """ISO 8601形式の文字列をdatetimeに変換します"""
-    return datetime.strptime(strDate, "%Y-%m-%dT%H:%M")
+    return datetime.fromisoformat(strDate)
 
 
 @app.get("/")
