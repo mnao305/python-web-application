@@ -23,10 +23,10 @@ async def read_root_page(request: Request):
     return {"message": "TODO"}
 
 
-@app.get("/add")
+@app.get("/add", response_class=HTMLResponse)
 async def read_post_page(request: Request):
     """新規アイテム追加ページの表示"""
-    return {"message": "TODO"}
+    return templates.TemplateResponse("add.html", {"request": request})
 
 
 @app.post("/add")
