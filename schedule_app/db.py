@@ -1,4 +1,7 @@
+from datetime import datetime, timedelta
+
 import sqlalchemy as sqla
+from sqlalchemy import and_, or_
 
 from schedule_app.models import Schedule
 
@@ -31,22 +34,40 @@ def create_table(engine: sqla.engine.Connectable):
     metadata.create_all(engine)
 
 
-def get_all_item(engine: sqla.engine.Connectable):
-    """全ての予定を取得する"""
+def get_today_all_item(engine: sqla.engine.Connectable):
+    """全ての今日の予定を取得する"""
+
+    today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
+    tomorrow = today + timedelta(days=1)
 
     # テーブル指定で全て取ってきたかったけど、createdAtとかラベルつけんといかんしこうなった
     # まぁやりようはある気がするけどとりあえずよし
-    q = sqla.sql.select(
-        (
-            schedules_table.c.id,
-            schedules_table.c.title,
-            schedules_table.c.body,
-            schedules_table.c.begin_at,
-            schedules_table.c.end_at,
-            schedules_table.c.created_at.label("createdAt"),
-            schedules_table.c.updated_at.label("updateAt"),
+    q = (
+        sqla.sql.select(
+            (
+                schedules_table.c.id,
+                schedules_table.c.title,
+                schedules_table.c.body,
+                schedules_table.c.begin_at,
+                schedules_table.c.end_at,
+                schedules_table.c.created_at.label("createdAt"),
+                schedules_table.c.updated_at.label("updateAt"),
+            )
         )
-    ).order_by(schedules_table.c.begin_at)
+        .where(
+            or_(
+                and_(
+                    schedules_table.c.begin_at > today,
+                    schedules_table.c.begin_at < tomorrow,
+                ),
+                and_(
+                    schedules_table.c.end_at > today,
+                    schedules_table.c.end_at < tomorrow,
+                ),
+            )
+        )
+        .order_by(schedules_table.c.begin_at)
+    )
     return [Schedule(**m) for m in engine.connect().execute(q)]
 
 
