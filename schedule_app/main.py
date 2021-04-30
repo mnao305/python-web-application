@@ -38,9 +38,13 @@ async def read_root_page(
 ):
     """一覧を表示する"""
     schedules = db.get_all_item(engine)
-    return templates.TemplateResponse(
-        "list.html", {"request": request, "schedules": schedules}
-    )
+    # 今日の予定をとる
+    # きっとsqlでwhereとか使ってやるのがいいんだろうなぁの気持ち
+    now = datetime.now()
+    s = [
+        schedule for schedule in schedules if schedule.begin_at < now < schedule.end_at
+    ]
+    return templates.TemplateResponse("list.html", {"request": request, "schedules": s})
 
 
 @app.get("/add", response_class=HTMLResponse)
