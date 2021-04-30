@@ -44,7 +44,7 @@ def get_all_item(engine: sqla.engine.Connectable):
             schedules_table.c.begin_at,
             schedules_table.c.end_at,
             schedules_table.c.created_at.label("createdAt"),
-            schedules_table.c.created_at.label("updateAt"),
+            schedules_table.c.updated_at.label("updateAt"),
         )
     ).order_by(schedules_table.c.begin_at)
     return [Schedule(**m) for m in engine.connect().execute(q)]
