@@ -54,3 +54,9 @@ def add_item(engine: sqla.engine.Connectable, schedule: Schedule):
     """新規アイテムをテーブルにインサートするよ"""
     q = schedules_table.insert()
     engine.connect().execute(q, schedule.dict())
+
+
+def delete_all(engine: sqla.engine.Connectable) -> None:
+    """予定をすべて消す（テスト用）"""
+    with engine.connect() as connection:
+        connection.execute(schedules_table.delete())

@@ -37,8 +37,8 @@
       <th>終了日時</th>
     </tr>
     {% for schedule in schedules %}
-    <tr>
-      <td>{{schedule.title}}</td>
+    <tr class="schedule-item">
+      <td class="schedule-title">{{schedule.title}}</td>
       <td>{{schedule.begin_at}}</td>
       <td>{{schedule.end_at}}</td>
     </tr>
