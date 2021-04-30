@@ -72,6 +72,13 @@ async def post_new_item(
             status_code=status.HTTP_400_BAD_REQUEST,
         )
 
+    if len(title) > 30:
+        return templates.TemplateResponse(
+            "add.html",
+            {"request": request, "error": "タイトルは30文字までです"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
+
     beginAt = string2Datetime(begin_at)
     endAt = string2Datetime(end_at)
 
