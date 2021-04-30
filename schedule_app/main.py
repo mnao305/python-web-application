@@ -100,6 +100,13 @@ async def post_new_item(
     )
 
 
-@app.get("/items/{id}", response_class=HTMLResponse)
-async def read_item(request: Request, id: str):
-    return templates.TemplateResponse("item.html", {"request": request, "id": id})
+@app.get("/schedule/{id}", response_class=HTMLResponse)
+async def read_item(
+    request: Request,
+    engine: sqla.engine.Connectable = Depends(get_engine),
+    id: str = "0",
+):
+    schedule = db.get_item_from_id(engine, int(id))
+    return templates.TemplateResponse(
+        "schedule.html", {"request": request, "schedule": schedule}
+    )

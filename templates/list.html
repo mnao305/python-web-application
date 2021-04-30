@@ -38,7 +38,7 @@
     </tr>
     {% for schedule in schedules %}
     <tr class="schedule-item">
-      <td class="schedule-title">{{schedule.title}}</td>
+      <td class="schedule-title"><a href="/schedule/{{schedule.id}}">{{schedule.title}}</a></td>
       <td>{{schedule.begin_at}}</td>
       <td>{{schedule.end_at}}</td>
     </tr>

@@ -50,6 +50,22 @@ def get_all_item(engine: sqla.engine.Connectable):
     return [Schedule(**m) for m in engine.connect().execute(q)]
 
 
+def get_item_from_id(engine: sqla.engine.Connectable, id: int):
+    """idを元に予定を取得する"""
+    q = sqla.sql.select(
+        (
+            schedules_table.c.id,
+            schedules_table.c.title,
+            schedules_table.c.body,
+            schedules_table.c.begin_at,
+            schedules_table.c.end_at,
+            schedules_table.c.created_at.label("createdAt"),
+            schedules_table.c.updated_at.label("updateAt"),
+        )
+    ).where(schedules_table.c.id == id)
+    return [Schedule(**m) for m in engine.connect().execute(q)][0]
+
+
 def add_item(engine: sqla.engine.Connectable, schedule: Schedule):
     """新規アイテムをテーブルにインサートするよ"""
     q = schedules_table.insert()
