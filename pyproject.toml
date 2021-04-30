@@ -20,6 +20,8 @@ flake8 = "^3.9.1"
 mypy = "^0.812"
 isort = "^5.8.0"
 sqlalchemy-stubs = "^0.4"
+beautifulsoup4 = "^4.9.3"
+requests = "^2.25.1"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
