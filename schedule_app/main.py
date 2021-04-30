@@ -30,10 +30,16 @@ def get_engine() -> sqla.engine.Connectable:
     return db_engine
 
 
-@app.get("/")
-async def read_root_page(request: Request):
+@app.get("/", response_class=HTMLResponse)
+async def read_root_page(
+    request: Request,
+    engine: sqla.engine.Connectable = Depends(get_engine),
+):
     """一覧を表示する"""
-    return {"message": "TODO"}
+    schedules = db.get_all_item(engine)
+    return templates.TemplateResponse(
+        "list.html", {"request": request, "schedules": schedules}
+    )
 
 
 @app.get("/add", response_class=HTMLResponse)
