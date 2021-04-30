@@ -49,7 +49,7 @@ async def read_post_page(request: Request):
     return templates.TemplateResponse("add.html", {"request": request})
 
 
-@app.post("/add")
+@app.post("/add", response_class=HTMLResponse)
 async def post_new_item(
     request: Request,
     response: Response,
@@ -62,27 +62,31 @@ async def post_new_item(
     """新規アイテムの追加"""
     if not title or not begin_at or not end_at:
         # 必須データが足りなかったらエラーを返す
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"msg": "error"}
+        return templates.TemplateResponse(
+            "add.html",
+            {"request": request, "error": "必須データが足りません"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
 
     beginAt = string2Datetime(begin_at)
     endAt = string2Datetime(end_at)
 
     if beginAt > endAt:
         # 開始日時より終了日時が早かったらエラーを返す
-        response.status_code = status.HTTP_400_BAD_REQUEST
-        return {"msg": "error"}
+        return templates.TemplateResponse(
+            "add.html",
+            {"request": request, "error": "終了日時を開始日時より前にすることはできません"},
+            status_code=status.HTTP_400_BAD_REQUEST,
+        )
 
     db.add_item(
         engine, Schedule(title=title, body=body, begin_at=beginAt, end_at=endAt)
     )
-    return {
-        "message": "TODO",
-        "title": title,
-        "body": body,
-        "begin_at": begin_at,
-        "end_at": end_at,
-    }
+    return templates.TemplateResponse(
+        "add.html",
+        {"request": request, "success": "予定を追加しました"},
+        status_code=status.HTTP_201_CREATED,
+    )
 
 
 @app.get("/items/{id}", response_class=HTMLResponse)

@@ -16,6 +16,10 @@
     textarea {
       margin-bottom: 10px;
     }
+
+    #error {
+      color: red;
+    }
   </style>
 
 
@@ -23,6 +27,12 @@
 
 <body>
   <h1>予定の追加</h1>
+  {% if error != None %}
+  <p id="error">{{error}}</p>
+  {% endif %}
+  {% if success != None %}
+  <p>{{success}}</p>
+  {% endif %}
   <form action="/add" method="post" id="add-form" onsubmit="return addSubmit()">
     <span>タイトル(30文字まで):</span>
     <input type="text" name="title" id="title-id" placeholder="Title" minlength="1" maxlength="30" required>
