@@ -17,21 +17,36 @@
       margin-bottom: 10px;
     }
   </style>
+
+
 </head>
 
 <body>
   <h1>予定の追加</h1>
-  <form action="/add" method="post" id="add-form">
-    <span>タイトル:</span>
-    <input type="text" name="title" id="title-id" placeholder="Title">
+  <form action="/add" method="post" id="add-form" onsubmit="return addSubmit()">
+    <span>タイトル(30文字まで):</span>
+    <input type="text" name="title" id="title-id" placeholder="Title" minlength="1" maxlength="30" required>
     <span>開始日時:</span>
-    <input type="datetime-local" name="begin_at">
+    <input type="datetime-local" name="begin_at" id="begin" required>
     <span>終了日時:</span>
-    <input type="datetime-local" name="end_at">
+    <input type="datetime-local" name="end_at" id="end" required>
     <span>自由テキスト:</span>
     <textarea name="body" id="body-id" cols="30" rows="10" placeholder="body"></textarea>
-    <button type="submit">追加</button>
+    <button id="submit-btn" type="submit">追加</button>
   </form>
+
+  <script>
+    const addSubmit = () => {
+      const btn = document.getElementById("submit-btn")
+      const begin = new Date(document.getElementById("begin").value).getTime()
+      const end = new Date(document.getElementById("end").value).getTime()
+
+      if (begin > end) {
+        alert("終了日時を開始日時より前にすることはできません")
+        return false
+      }
+    }
+  </script>
 </body>
 
 </html>
