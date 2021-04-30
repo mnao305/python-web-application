@@ -27,6 +27,8 @@ def setup_db():
     yield
 
 
+# 多分こういうのじゃ無くてdatetimeをラップしてあげる？ような感じで書くほうがいいんだろうなと思ってる。
+# DIってやつか。
 def get_today_date():
     return datetime.now().isoformat()
 
@@ -47,8 +49,6 @@ def test_empty_schedule(setup_db: Callable[[], None]) -> None:
 def test_post_schedule(setup_db: Callable[[], None]) -> None:
     """追加した予定が表示される"""
     title = "test test"
-    now = get_today_date()
-    print(now)
     response = client.post(
         "/add",
         data={
