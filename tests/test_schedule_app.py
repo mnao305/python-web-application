@@ -31,6 +31,11 @@ def get_today_date():
     return datetime.now().isoformat()
 
 
+def get_today_after_one_hour():
+    afterOneHour = datetime.now() + timedelta(hours=1)
+    return afterOneHour.isoformat()
+
+
 def test_empty_schedule(setup_db: Callable[[], None]) -> None:
     """何も追加していない場合は予定が表示されていない"""
     response = client.get("/")
@@ -49,8 +54,8 @@ def test_post_schedule(setup_db: Callable[[], None]) -> None:
         data={
             "title": title,
             "body": "",
-            "begin_at": now,
-            "end_at": now + timedelta(hours=1),
+            "begin_at": get_today_date(),
+            "end_at": get_today_after_one_hour(),
         },
     )
     assert response.status_code == 201
@@ -72,8 +77,8 @@ def test_post_schedule_title_of_zero_length(setup_db: Callable[[], None]) -> Non
         data={
             "title": title,
             "body": "",
-            "begin_at": now,
-            "end_at": now + timedelta(hours=1),
+            "begin_at": get_today_date(),
+            "end_at": get_today_after_one_hour(),
         },
     )
     assert response.status_code == 400
@@ -95,8 +100,8 @@ def test_post_too_long_schedule_title(setup_db: Callable[[], None]) -> None:
         data={
             "title": title,
             "body": "",
-            "begin_at": now,
-            "end_at": now + timedelta(hours=1),
+            "begin_at": get_today_date(),
+            "end_at": get_today_after_one_hour(),
         },
     )
     assert response.status_code == 400
@@ -118,8 +123,8 @@ def test_post_end_to_begin(setup_db: Callable[[], None]) -> None:
         data={
             "title": title,
             "body": "",
-            "begin_at": now + timedelta(hours=1),
-            "end_at": now,
+            "begin_at": get_today_after_one_hour(),
+            "end_at": get_today_date(),
         },
     )
     assert response.status_code == 400
