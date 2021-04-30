@@ -1,3 +1,4 @@
+from datetime import datetime, timedelta
 from typing import Callable
 
 import pytest
@@ -26,6 +27,10 @@ def setup_db():
     yield
 
 
+def get_today_date():
+    return datetime.now().isoformat()
+
+
 def test_empty_schedule(setup_db: Callable[[], None]) -> None:
     """何も追加していない場合は予定が表示されていない"""
     response = client.get("/")
@@ -37,13 +42,15 @@ def test_empty_schedule(setup_db: Callable[[], None]) -> None:
 def test_post_schedule(setup_db: Callable[[], None]) -> None:
     """追加した予定が表示される"""
     title = "test test"
+    now = get_today_date()
+    print(now)
     response = client.post(
         "/add",
         data={
             "title": title,
             "body": "",
-            "begin_at": "2021-04-30T13:00",
-            "end_at": "2021-04-30T14:00",
+            "begin_at": now,
+            "end_at": now + timedelta(hours=1),
         },
     )
     assert response.status_code == 201
@@ -58,13 +65,15 @@ def test_post_schedule(setup_db: Callable[[], None]) -> None:
 def test_post_schedule_title_of_zero_length(setup_db: Callable[[], None]) -> None:
     """空のタイトルでは追加できない"""
     title = ""
+    now = get_today_date()
+    print(now)
     response = client.post(
         "/add",
         data={
             "title": title,
             "body": "",
-            "begin_at": "2021-04-30T13:00",
-            "end_at": "2021-04-30T14:00",
+            "begin_at": now,
+            "end_at": now + timedelta(hours=1),
         },
     )
     assert response.status_code == 400
@@ -79,13 +88,15 @@ def test_post_schedule_title_of_zero_length(setup_db: Callable[[], None]) -> Non
 def test_post_too_long_schedule_title(setup_db: Callable[[], None]) -> None:
     """長すぎるタイトルでは追加できない"""
     title = "1234567890123456789012345678901"
+    now = get_today_date()
+    print(now)
     response = client.post(
         "/add",
         data={
             "title": title,
             "body": "",
-            "begin_at": "2021-04-30T13:00",
-            "end_at": "2021-04-30T14:00",
+            "begin_at": now,
+            "end_at": now + timedelta(hours=1),
         },
     )
     assert response.status_code == 400
@@ -100,13 +111,15 @@ def test_post_too_long_schedule_title(setup_db: Callable[[], None]) -> None:
 def test_post_end_to_begin(setup_db: Callable[[], None]) -> None:
     """開始日時より終了日時が早かったら追加できない"""
     title = "test"
+    now = get_today_date()
+    print(now)
     response = client.post(
         "/add",
         data={
             "title": title,
             "body": "",
-            "begin_at": "2021-04-30T14:00",
-            "end_at": "2021-04-30T13:00",
+            "begin_at": now + timedelta(hours=1),
+            "end_at": now,
         },
     )
     assert response.status_code == 400
